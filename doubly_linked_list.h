@@ -28,10 +28,10 @@ void DLL_PushFront(struct DoublyLinkedList* dll, void* data);
 void DLL_InsertBefore(struct DoublyLinkedList* dll, struct Node* next_node, void* data);
 void DLL_InsertAfter(struct DoublyLinkedList* dll, struct Node* prev_node, void* data);
 void DLL_Remove(struct DoublyLinkedList* dll, struct Node* ptr);
-void DLL_RemoveBefore(struct DoublyLinkedList* dll, struct Node* prev_node);//TODO
-void DLL_RemoveAfter(struct DoublyLinkedList* dll, struct Node* next_node);//TODO
+void DLL_RemoveBefore(struct DoublyLinkedList* dll, struct Node* prev_node);
+void DLL_RemoveAfter(struct DoublyLinkedList* dll, struct Node* next_node);
 void DLL_RemoveNth(struct DoublyLinkedList* dll, unsigned int idx);
 struct Node* DLL_Find(struct DoublyLinkedList* dll, void* val);
-void DLL_ShowList(struct DoublyLinkedList* dll); //TODO
+void DLL_ShowList(struct DoublyLinkedList* dll);
 #endif // !DOUBLY_LINKED_LIST_H
 
