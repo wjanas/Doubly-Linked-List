@@ -1,12 +1,15 @@
 #include "doubly_linked_list.h"
 
-void DLL_Create(struct DoublyLinkedList *dll) {
+void DLL_Create(struct DoublyLinkedList* dll, dll_node_compare dll_cmp, dll_show_node dll_show) {
 	dll->head = NULL;
 	dll->tail = NULL;
 	dll->elements_cnt = 0;
+
+	dll->dll_node_compare_func = dll_cmp;
+	dll->dll_show_node_func = dll_show;
 }
 
-void DLL_PushBack(struct DoublyLinkedList* dll, int data) {
+void DLL_PushBack(struct DoublyLinkedList* dll, void* data) {
 	
 	struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
 	
@@ -32,7 +35,7 @@ void DLL_PushBack(struct DoublyLinkedList* dll, int data) {
 	dll->elements_cnt += 1;
 }
 
-void DLL_PushFront(struct DoublyLinkedList* dll, int data) {
+void DLL_PushFront(struct DoublyLinkedList* dll, void* data) {
 
 	struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
 
@@ -58,7 +61,7 @@ void DLL_PushFront(struct DoublyLinkedList* dll, int data) {
 	dll->elements_cnt += 1;
 }
 
-void DLL_InsertBefore(struct DoublyLinkedList* dll, struct Node* next_node, int data) {
+void DLL_InsertBefore(struct DoublyLinkedList* dll, struct Node* next_node, void* data) {
 
 	struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
 	
@@ -73,7 +76,7 @@ void DLL_InsertBefore(struct DoublyLinkedList* dll, struct Node* next_node, int 
 	dll->elements_cnt += 1;
 }
 
-void DLL_InsertAfter(struct DoublyLinkedList* dll, struct Node* prev_node, int data) {
+void DLL_InsertAfter(struct DoublyLinkedList* dll, struct Node* prev_node, void* data) {
 
 	struct Node* temp = (struct Node*)malloc(sizeof(struct Node));
 
@@ -96,6 +99,21 @@ void DLL_Remove(struct DoublyLinkedList* dll, struct Node* ptr) {
 	free(ptr);
 	dll->elements_cnt -= 1;
 }
+void DLL_RemoveBefore(struct DoublyLinkedList* dll, struct Node* next_node) {
+	if (next_node != NULL) {
+		next_node->prev = next_node->prev->prev;
+		next_node->prev->next = next_node;
+		free(next_node->prev);
+	}
+}
+
+void DLL_RemoveAfter(struct DoublyLinkedList* dll, struct Node* prev_node) {
+	if (prev_node != NULL) {
+		prev_node->next = prev_node->next->next;
+		prev_node->next->prev = prev_node;
+		free(prev_node->next);
+	}
+}
 
 void DLL_RemoveNth(struct DoublyLinkedList* dll, unsigned int idx) {
 
@@ -106,7 +124,7 @@ void DLL_RemoveNth(struct DoublyLinkedList* dll, unsigned int idx) {
 		return;
 	}
 
-	for (int i = 0; i < idx && ptr != NULL; i++) {
+	for (unsigned int i = 0; i < idx && ptr != NULL; i++) {
 		ptr = ptr->next;
 	}
 
@@ -127,12 +145,12 @@ void DLL_RemoveNth(struct DoublyLinkedList* dll, unsigned int idx) {
 	dll->elements_cnt -= 1;
 }
 
-struct Node* DLL_Find(struct DoublyLinkedList* dll, int val) {
+struct Node* DLL_Find(struct DoublyLinkedList* dll, void* val) {
 
 	struct Node* ptr = dll->head;
 
 	while (ptr != NULL) {
-		if (ptr->data == val)
+		if (!dll->dll_node_compare_func(val, ptr->data))
 			break;
 		ptr = ptr->next;
 	}
@@ -145,10 +163,12 @@ void DLL_ShowList(struct DoublyLinkedList* dll) {
 
 	while (ptr != NULL) {
 		printf("Address: %d\n"
-			"Data: %d\n"
 			"Previous Address: %d\n"
-			"Next Address: %d\n\n",
-			(int)ptr, ptr->data, (int)ptr->prev, (int)ptr->next);
+			"Next Address: %d\n"
+			"Data: \n",
+			(int)ptr, (int)ptr->prev, (int)ptr->next);
+
+		dll->dll_show_node_func(ptr->data);
 		ptr = ptr->next;
 	}
 

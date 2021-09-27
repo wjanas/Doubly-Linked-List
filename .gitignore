@@ -58,3 +58,4 @@ dkms.conf
 *.vcxproj.user
 /Debug/*
 /.vs/*
+main.c
